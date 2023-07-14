@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+        <title>Validation</title>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script type="text/javascript">
+            var tags = document.getElementsByTagName("input");
+            var formtag = document.getElementsByTagName("form");
+            function validation(){
+                for(var i=0;i<tags.length;i++){
+                    var tagid = tags[i].id;
+                    var tagval = tags[i].value;
+                    var tagtit = tags[i].title;
+                    var tagclass = tags[i].className;
+                    //Validation for Textbox Start
+                    if(tags[i].type == "text"){
+                        if(tagval == "" || tagval == null){
+                            var lbl = $(tags[i]).prev().text();
+                            lbl = lbl.replace(/ : /g,'')
+                            //alert("Please Enter "+lbl);
+                            $(".span"+tagid).remove();
+                            $("#"+tagid).after("<span style='color:red;' class='span"+tagid+"'>Please Enter "+lbl+"</span>");
+                            $("#"+tagid).focus();
+                            //return false;
+                        }
+                        else if(tagval != "" || tagval != null){
+                            $(".span"+tagid).remove();
+                        }
+                        //Validation for compare text in two text boxes Start
+                        //put two tags with same class name and put class name in compareValidator
+                        //Validation for compare text in two text boxes End
+                        //Validation for Email Start
+                        if((tagval != "") && (tagclass.indexOf('email') != -1)){
+                        //enter class = email where you want to use email validator
+                            var reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
+                            if (reg.test(tagval)){
+                                $(".span"+tagid).remove();
+                                return true; 
+                            }
+                            else{
+                                $(".span"+tagid).remove();
+                                $("#"+tagid).after("<span style='color:red;' class='span"+tagid+"'>Email is Invalid</span>");
+                                $("#"+tagid).focus();
+                                return false;
+                            }
+                        }
+                        //Validation for Email End
+                    }
+                    //Validation for Textbox End           
+                    else{
+
+                    }
+                }
+                //return false;
+            }
+            function Validate(){
+               if(!validation()){
+                    return false;
+                }
+                return true;
+            }
+            function onloadevents(){
+                tags[tags.length -1].onclick = function(){
+                    //return Validate();
+                }
+                for(var j=0;j<formtag.length;j++){
+                    formtag[j].onsubmit = function(){
+                        return Validate();
+                    }
+                }
+                for(var i=0;i<tags.length;i++){
+                    var tagid = tags[i].id;
+                    var tagval = tags[i].value;
+                    var tagtit = tags[i].title;
+                    var tagclass = tags[i].className;
+                    if((tags[i].type == "text") && (tagclass.indexOf('numeric') != -1)){
+                        //enter class = numeric where you want to use numeric validator
+                        document.getElementById(tagid).onkeypress = function(){
+                            numeric(event);
+                        }
+                    }
+                }
+            }
+            if (document.addEventListener) {
+              document.addEventListener("DOMContentLoaded", onloadevents, false);
+            }
+            //window.onload = onloadevents;
+        </script>
+    </head>
+    <body>
+        <form method="post">
+            <label for="fname">Test 1 : </label><input type="text" title="Test 1" id="fname" class="form1"><br>
+            <label for="fname1">Test 2 : </label><input type="text" title="Test 2" id="fname1" class="form1 compare"><br>
+            <input type="submit" id="sub" value="Submit">
+        </form>
+    </body>
+</html>
